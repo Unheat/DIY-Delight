@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 3000
 
 const app = express()
 
-app.use(express.json())
+app.use(express.json()) // The body arrives as a raw JSON string. app.use(express.json()) is middleware that parses that string into a JS object and attaches it as req.body. Without it, req.body is undefined
 
 if (process.env.NODE_ENV === 'development') {
     app.use(favicon(path.resolve('../', 'client', 'public', 'lightning.png')))
