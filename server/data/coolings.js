@@ -3,9 +3,9 @@
 // custom_pcs.cooling_id will reference cooling.id.
 // Note: "Liquid" is required when GPU = RTX 4090 (impossible-combo rule).
 
-const cooling = [
+const coolings = [
     { name: 'Air', price: 40 },
     { name: 'Liquid', price: 120 }
 ]
 
-export default cooling
+export default coolings
