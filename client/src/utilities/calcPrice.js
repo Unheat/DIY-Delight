@@ -11,6 +11,13 @@ const calcTotalPrice = (selectedOptions) => {
     // TODO: add up the price of each selected option and return the total.
     // Hint: Object.values(selectedOptions) gives you an array to reduce/sum over,
     //       but guard against selections that aren't chosen yet (undefined).
+    return Object.values(selectedOptions)      // -> array of the selected option objects
+        .filter(Boolean)                   // drop any undefined (not-yet-selected)
+        .reduce((total, option) => total + option.price, 0)   // sum the prices
+
+
 }
+
+
 
 export { calcTotalPrice }

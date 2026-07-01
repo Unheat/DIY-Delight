@@ -8,10 +8,12 @@
 // Return something the UI can use — e.g. an error message string (or null if valid),
 // or a boolean. Your choice; be consistent with how CreatePc uses it.
 
-const checkCombo = (selectedOptions) => {
-    // TODO: read the chosen gpu + cooling from selectedOptions.
-    // If gpu is 'RTX 4090' and cooling is 'Air', return an error message.
-    // Otherwise return null (valid).
+const checkCombo = (selections) => {
+    if (selections.gpu?.name === 'RTX 4090' && selections.cooling?.name === 'Air') {
+        return 'RTX 4090 requires Liquid cooling.'
+    }
+    return null
 }
 
 export { checkCombo }
+

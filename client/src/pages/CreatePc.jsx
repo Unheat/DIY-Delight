@@ -6,47 +6,99 @@ import { calcTotalPrice } from '../utilities/calcPrice'
 import { checkCombo } from '../utilities/validation'
 
 // PAGE: Customize / create a new PC build.
-// TEMPLATE — follow the numbered TODOs. This is the biggest page; take it step by step.
+
+const FEATURES = [
+    { key: 'cpu', label: 'CPU', listKey: 'cpus' },
+    { key: 'gpu', label: 'GPU', listKey: 'gpus' },
+    { key: 'ram', label: 'RAM', listKey: 'rams' },
+    { key: 'cooling', label: 'Cooling', listKey: 'coolings' },
+    { key: 'caseColor', label: 'Case Color', listKey: 'caseColors' }
+]
 
 const CreatePc = () => {
+    const [options, setOptions] = useState(null)
+    const [selections, setSelections] = useState({})
+    const [name, setName] = useState('')
 
-    // 1. STATE ---------------------------------------------------------------
-    // TODO: state to hold the fetched catalog (cpus, gpus, ...). Start as null.
-    //   const [options, setOptions] = useState(null)
-    // TODO: state for the user's current selections (chosen option per feature).
-    //   const [selections, setSelections] = useState({})  // e.g. { cpu:{...}, gpu:{...} }
-    // TODO: state for the build name (text input).
-    // TODO: (optional) state for an error message from checkCombo.
+    // fetch the catalog once on mount
+    useEffect(() => {
+        const load = async () => {
+            const data = await getAllOptions()
+            if (data) setOptions(data)
+        }
+        load()
+    }, [])
 
-    // 2. FETCH CATALOG ON MOUNT ---------------------------------------------
-    // TODO: useEffect(() => { ... }, []) that calls getAllOptions() and stores it.
-    //   Remember: the fetch is async, so define an async fn inside and call it.
+    const handleSelect = (featureKey, listKey, optionId) => {
+        const option = options[listKey].find(o => o.id === Number(optionId))
+        setSelections(prev => ({ ...prev, [featureKey]: option }))
+    }
 
-    // 3. DERIVED VALUES ------------------------------------------------------
-    // TODO: const totalPrice = calcTotalPrice(selections)
-    // TODO: const comboError = checkCombo(selections)
-    // TODO: figure out the selected case color's hex_color for the visual change.
+    const totalPrice = calcTotalPrice(selections)
+    const comboError = checkCombo(selections)
+    const hex = selections.caseColor?.hex_color
 
-    // 4. HANDLERS ------------------------------------------------------------
-    // TODO: handleSelect(feature, option) -> update selections state.
-    // TODO: handleSubmit() -> if comboError, block + show message.
-    //       Otherwise build the pc object (name, total_price, cpu_id, gpu_id, ...)
-    //       call createCustomPc(pc), then redirect (window.location = '/custompcs').
+    const allChosen = FEATURES.every(f => selections[f.key])
 
-    // 5. RENDER --------------------------------------------------------------
-    // While options is null, show a loading message.
-    // TODO: for each feature, render a <select> (dropdown) built from options.<feature>.
-    //       On change, call handleSelect.
-    // TODO: a visual element (e.g. a box) whose background uses the selected hex_color.
-    // TODO: show the live totalPrice.
-    // TODO: a text input for the build name.
-    // TODO: show comboError if present.
-    // TODO: a Save button that calls handleSubmit (disabled if comboError).
+    const handleSubmit = async () => {
+        if (comboError || !allChosen || !name) return
+        const pc = {
+            name,
+            total_price: totalPrice,
+            cpu_id: selections.cpu.id,
+            gpu_id: selections.gpu.id,
+            ram_id: selections.ram.id,
+            cooling_id: selections.cooling.id,
+            case_color_id: selections.caseColor.id
+        }
+        await createCustomPc(pc)
+        window.location = '/custompcs'
+    }
+
+    if (!options) return <p className='loading'>Loading...</p>
 
     return (
-        <div className='create-pc'>
+        <div className='create-pc pc-form'>
             <h2>Customize your PC</h2>
-            {/* TODO: build the UI described above */}
+
+            <div className='color-swatch' style={{ backgroundColor: hex || '#333' }} />
+
+            <label>
+                Build name
+                <input
+                    placeholder='e.g. My Gaming Rig'
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                />
+            </label>
+
+            {FEATURES.map(({ key, label, listKey }) => (
+                <label key={key}>
+                    {label}
+                    <select
+                        value={selections[key]?.id ?? ''}
+                        onChange={(e) => handleSelect(key, listKey, e.target.value)}
+                    >
+                        <option value='' disabled>Select {label}...</option>
+                        {options[listKey].map(opt => (
+                            <option key={opt.id} value={opt.id}>
+                                {opt.name}{opt.price ? ` ($${opt.price})` : ''}
+                            </option>
+                        ))}
+                    </select>
+                </label>
+            ))}
+
+            <p className='price'>Total: ${totalPrice}</p>
+            {comboError && <p className='error'>{comboError}</p>}
+
+            <button
+                className='save-btn'
+                onClick={handleSubmit}
+                disabled={!!comboError || !allChosen || !name}
+            >
+                Save Build
+            </button>
         </div>
     )
 }

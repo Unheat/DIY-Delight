@@ -1,6 +1,6 @@
 import { pool } from '../config/database.js'
 
-const getAllCustomPCs = async (req, res) => {
+const getAllCustomPcs = async (req, res) => {
     try {
         const sql = `
             SELECT * FROM custom_pcs
@@ -103,4 +103,4 @@ const deleteCustomPc = async (req, res) => {
     }
 }
 
-export { getAllCustomPCs, getCustomPc, createCustomPc, updateCustomPc, deleteCustomPc }
+export { getAllCustomPcs, getCustomPc, createCustomPc, updateCustomPc, deleteCustomPc }
