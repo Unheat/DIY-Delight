@@ -1,3 +1,4 @@
+
 # WEB103 Project 4 - *DIY Delight: Custom PC Builder*
 
 Submitted by: **An Dang**
@@ -34,12 +35,11 @@ The following **additional** features are implemented:
 ## Video Walkthrough
 
 Here's a walkthrough of implemented features:
-
-<img src='' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src="https://github.com/user-attachments/assets/0be825b3-f597-4f8b-9c99-6bf13fa5d5ec" title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 <!-- Replace the src above with a link to your recorded GIF. -->
 
-GIF created with ...
+GIF created with ScreeToGif
 <!-- Recommended tools: LICEcap (Win/Mac) or Kap / Peek. -->
 
 ## Notes
